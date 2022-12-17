@@ -6,17 +6,26 @@
 #
 ## Variables
 #
-web_dir="{changeme}"
-db_name="{changeme}"
-db_user="{changeme}"
-db_password="{changeme}"
-sqlrootpassword="{changeme}"
+echo "Enter directory for Wordpress Files"
+read -p "Web Directory: " web_dir
+
+echo "Enter a database name"
+read -p "Database Name: " db_name
+
+echo "Enter a database username:"
+read -p "Username: " db_user
+
+echo "Choose a password for" $db_name
+read -sp "Password: " db_password
+
+echo "Choose a root password for the database"
+read -sp "Root password: " sqlrootpassword
 #
 ## Update instance and install Apache and MySQL and other utilities
 #
 yum update -y
 yum install lynx -y
-amazon-linux-extras enable mariadb10.5 php8.0 && yum clean metadata
+amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
 yum install httpd -y
 #amazon-linux-extras enable lamp-mariadb10.2-php7.2=latest && yum clean metadata
 yum install yum install mariadb mariadb-server jemalloc -y
@@ -57,7 +66,7 @@ echo "password=$sqlrootpassword">>/root/.my.cnf
 ## Install and configure PHP
 #
 #yum install php php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
-amazon-linux-extras install php8.0 -y
+amazon-linux-extras install php8.1 -y
 yum install php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
 sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
 systemctl restart httpd

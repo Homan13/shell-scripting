@@ -6,15 +6,22 @@
 #
 ## Variables
 #
-db_name="{changeme}"
-db_user="{changeme}"
-db_password="{changeme}"
-sqlrootpassword="{changeme}"
+echo "Enter a database name:"
+read -p "Database Name:" db_name
+
+echo "Enter a database username:"
+read -p "Username:" db_user
+
+echo "Choose a password for " $db_name
+read -sp "Password:" db_password
+
+echo "Choose a root password for the database"
+read -sp "Root password:" sqlrootpassword
 #
 ## Update instance and install Apache and MySQL and other utilities
 #
 yum update -y
-amazon-linux-extras enable mariadb10.5 php8.0 && yum clean metadata
+amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
 yum install httpd -y
 yum install yum install mariadb mariadb-server jemalloc -y
 #
@@ -61,7 +68,7 @@ mysql -u root -e "FLUSH PRIVILEGES;"
 #
 ## Install and configure PHP
 #
-amazon-linux-extras install php8.0 -y
+amazon-linux-extras install php8.1 -y
 yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring -y
 #
 ## Download and extract Drupal
