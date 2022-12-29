@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-## Install Drupal plus pre-requisites on a RHEL based instance (RHEL, CentOS, Amazon Linux)
+## Install Wordpress plus pre-requisites on Ubuntu based instance
+## Confirmed working on Ubuntu 20.04
 ## Apache based installation
 ## Inspired by https://linuxhostsupport.com/blog/how-to-install-drupal-9-cms-on-ubuntu-20-04/
 #
@@ -18,18 +19,16 @@ read -sp "Password:" db_password
 echo "Choose a root password for the database"
 read -sp "Root password:" sqlrootpassword
 #
-## Update instance and install Apache and MySQL and other utilities
-#
-yum update -y
-amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
-yum install httpd -y
-yum install yum install mariadb mariadb-server jemalloc -y
+apt update -y && apt upgrade -y
+apt install apache2 -y
+rm -rf /var/www/html/index.html
+apt install mariadb-server-10.6 mariadb-client-10.6 -y
 #
 ## Start and enable Apache web-server
 #
-sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
-systemctl enable httpd
-systemctl start httpd
+sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/apache2/apache2.conf
+systemctl enable apache2
+systemctl start apache2
 #
 ## Start and enable MySQL
 #
@@ -68,8 +67,8 @@ mysql -u root -e "FLUSH PRIVILEGES;"
 #
 ## Install and configure PHP
 #
-amazon-linux-extras install php8.1 -y
-yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring -y
+apt install php8.1 -y
+apt install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysql -y
 #
 ## Download and extract Drupal
 #
@@ -79,8 +78,8 @@ tar -xzf tar.gz
 mv drupal-* drupal
 cd drupal
 sudo rsync -avz . /var/www/html
-chown -R apache:apache /var/www/html
-systemctl restart httpd
+chown -R www-data:www-data /var/www/html
+systemctl restart apache2
 cd /tmp
 #
 ## System cleanup

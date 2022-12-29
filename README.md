@@ -6,20 +6,17 @@ A collection of shell scripts I've used over my years working in IT. To be clear
 
 This repository contains the following scripts;
 
-**drupal.sh** - This script will configure your VM/server/instance to serve as a web server and database to serve up a Drupal site. As this runs the web server and database on a signal VM/server/instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Drupal 9.49, Apache 2.4.54, MariaDB 10.5 and PHP8.1.
+**drupal-al2.sh** - This script will configure your Amazon Linux 2 (AL2) instance to serve as a web server and database to serve up a Drupal site. As this runs the web server and database on a single instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Drupal 10.0.x, Apache 2.4.x, MariaDB 10.6.x and PHP8.1.x.
 
-**wordpress.sh** - This script will configure your VM/server/instance to serve as a web server and database to serve up a Wordpress site. As this runs the web server and database on a signal VM/server/instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Wordpress 6.1.1, Apache 2.4.54, MariaDB 10.5 and PHP8.1.
+**wordpress-al2.sh** - This script will configure your Amazon Linux 2 (AL2) instance to serve as a web server and database to serve up a Wordpress site. As this runs the web server and database on a single instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Wordpress 6.1.x, Apache 2.4.x, MariaDB 10.6.x and PHP8.1.x.
 
-In the case of both scripts, please take note of the variables section at the top of each script. These will need to be updated prior to deploying these stacks.
+**wordpress-rhel.sh** - This script will configure your Red Hat Enterprise Linux (RHEL) 9 instance to serve as a web server and database to serve up a Wordpress site. As this runs the web server and database on a single instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Wordpress 6.1.x, Apache 2.4.x, MariaDB 10.6.x and PHP8.1.x.
 
-```
-db_name="{changeme}"
-db_user="{changeme}"
-db_password="{changeme}"
-sqlrootpassword="{changeme}"
-```
+**drupal-ubuntu.sh** - This script will configure your Ubuntu 20.04 instance to serve as a web server and database to serve up a Drupal site. As this runs the web server and database on a single instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Drupal 10.0.x, Apache 2.4.x, MariaDB 10.6.x and PHP8.1.x.
 
-In the above sample, simply substitute your selected valuable for the {changeme} section, being sure to eliminate the brackets. Once you have done so you can save the script, make sure its executable and execute the script.
+**wordpress-ubuntu.sh** - This script will configure your Ubuntu 20.04 instance to serve as a web server and database to serve up a Wordpress site. As this runs the web server and database on a single instance it is not meant for production workloads. This script is meant to be used as a learning tool helping someone rapidly launch a LAMP stack running Drupal if they've never worked with the technology before in an effort to familiarize themselves with this type of deployment. This script is running the following versions; Wordpress 6.1.x, Apache 2.4.x, MariaDB 10.6.x and PHP8.1.x.
+
+These scripts should be ready to launch once you download them, just make sure it is executable on the system it is being run on and let it rip!
 
 ### Prerequisites
 
@@ -30,7 +27,6 @@ All you need to get started with these scripts is a command line, and your favor
 * [Amazon Linux 2](https://aws.amazon.com/amazon-linux-2/?amazon-linux-whats-new.sort-by=item.additionalFields.postDateTime&amazon-linux-whats-new.sort-order=desc)
 * [Apache](https://httpd.apache.org/)
 * [Bash](https://www.gnu.org/software/bash/)
-* [CentOS](https://www.centos.org/)
 * [Drupal](https://www.drupal.org/)
 * [MariaDB](https://mariadb.org/)
 * [PHP](https://www.php.net/)

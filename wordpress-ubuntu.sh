@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-## Install Wordpress plus pre-requisites on a RHEL based instance (RHEL, CentOS, Amazon Linux)
+## Install Wordpress plus pre-requisites on Ubuntu based instance
 ## Apache based installation
 ## Inspired by https://www.how2shout.com/linux/script-to-install-lamp-wordpress-on-ubuntu-20-04-lts-server-quickly-with-one-command/
 #
@@ -23,17 +23,16 @@ read -sp "Root password: " sqlrootpassword
 #
 ## Update instance and install Apache and MySQL and other utilities
 #
-yum update -y
-yum install lynx -y
-amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
-yum install httpd -y
-#amazon-linux-extras enable lamp-mariadb10.2-php7.2=latest && yum clean metadata
-yum install yum install mariadb mariadb-server jemalloc -y
+apt update -y && apt upgrade -y
+apt install lynx -y
+apt install apache2 -y
+rm -rf $web_dir/index.html
+apt install mariadb-server-10.6 mariadb-client-10.6 -y
 #
 ## Start and enable Apache web-server
 #
-systemctl enable httpd
-systemctl start httpd
+systemctl enable apache2
+systemctl start apache2
 #
 ## Start and enable MySQL
 #
@@ -65,13 +64,12 @@ echo "password=$sqlrootpassword">>/root/.my.cnf
 #
 ## Install and configure PHP
 #
-#yum install php php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
-amazon-linux-extras install php8.1 -y
-yum install php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
-sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
-systemctl restart httpd
+apt install php8.1 -y 
+apt install php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
+sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/apache2/apache2.conf
+systemctl restart apache2
 #
-## Download, extract and configure WordPress
+# Download, extract and configure WordPress
 #
 if test -f /tmp/latest.tar.gz
 then
@@ -81,7 +79,7 @@ echo "Downloading WordPress installation package"
 cd /tmp/ && wget "http://wordpress.org/latest.tar.gz";
 fi
 tar -C $web_dir -zxf /tmp/latest.tar.gz --strip-components=1
-chown apache: $web_dir -R
+chown www-data: $web_dir -R
 #
 ## Create wp-config and configure DB
 #
