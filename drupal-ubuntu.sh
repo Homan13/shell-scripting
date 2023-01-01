@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ## Install Wordpress plus pre-requisites on Ubuntu based instance
-## Confirmed working on Ubuntu 20.04
+## Confirmed working on Ubuntu 22.04
 ## Apache based installation
 ## Inspired by https://linuxhostsupport.com/blog/how-to-install-drupal-9-cms-on-ubuntu-20-04/
 #
@@ -24,9 +24,10 @@ apt install apache2 -y
 rm -rf /var/www/html/index.html
 apt install mariadb-server-10.6 mariadb-client-10.6 -y
 #
-## Start and enable Apache web-server
+## Configure, start and enable Apache web-server
 #
-sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/apache2/apache2.conf
+sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+a2enmod rewrite
 systemctl enable apache2
 systemctl start apache2
 #
