@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-## Install Drupal plus pre-requisites on an Amazon Linux 2 based instance
+## Install Drupal plus pre-requisites on a RHEL9 based instance
 ## Apache based installation
 ## Inspired by https://linuxhostsupport.com/blog/how-to-install-drupal-9-cms-on-ubuntu-20-04/
 #
@@ -20,10 +20,10 @@ read -sp "Root password:" sqlrootpassword
 #
 ## Update instance and install Apache and MySQL and other utilities
 #
-yum update -y
-amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
-yum install httpd -y
-yum install yum install mariadb mariadb-server jemalloc -y
+dnf update -y
+dnf install wget -y
+dnf install httpd -y
+dnf install mariadb mariadb-server -y
 #
 ## Start and enable Apache web-server
 #
@@ -68,8 +68,10 @@ mysql -u root -e "FLUSH PRIVILEGES;"
 #
 ## Install and configure PHP
 #
-amazon-linux-extras install php8.1 -y
-yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
+dnf module reset php
+dnf module enable php:8.1 -y
+dnf install php -y
+dnf install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 #
 ## Download and extract Drupal
 #
@@ -80,6 +82,7 @@ mv drupal-* drupal
 cd drupal
 sudo rsync -avz . /var/www/html
 chown -R apache:apache /var/www/html
+chcon -Rv --type=httpd_sys_rw_content_t /var/www/html/sites/default/
 systemctl restart httpd
 cd /tmp
 #
