@@ -6,26 +6,31 @@
 #
 ## Variables
 #
+echo "Enter directory for Drupal Files"
+read -p "Web Directory: " web_dir
+
 echo "Enter a database name:"
-read -p "Database Name:" db_name
+read -p "Database Name: " db_name
 
 echo "Enter a database username:"
-read -p "Username:" db_user
+read -p "Username: " db_user
 
 echo "Choose a password for " $db_name
-read -sp "Password:" db_password
+read -sp "Password: " db_password
 
 echo "Choose a root password for the database"
-read -sp "Root password:" sqlrootpassword
+read -sp "Root password: " sqlrootpassword
 #
-## Update instance and install Apache and MySQL and other utilities
+## Update instance and install Apache, MySQL, PHP and other utilities
 #
 yum update -y
 amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
 yum install httpd -y
 yum install yum install mariadb mariadb-server jemalloc -y
+amazon-linux-extras install php8.1 -y
+yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 #
-## Start and enable Apache web-server
+## Configure, start and enable Apache web-server
 #
 sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
 systemctl enable httpd
@@ -65,11 +70,6 @@ mysql -u root -e "CREATE DATABASE $db_name;"
 mysql -u root -e "CREATE USER '$db_user'@'localhost' IDENTIFIED BY '$db_password';"
 mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'localhost';"
 mysql -u root -e "FLUSH PRIVILEGES;"
-#
-## Install and configure PHP
-#
-amazon-linux-extras install php8.1 -y
-yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 #
 ## Download and extract Drupal
 #

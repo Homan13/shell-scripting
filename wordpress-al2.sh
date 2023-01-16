@@ -12,10 +12,10 @@ read -p "Web Directory: " web_dir
 echo "Enter a database name"
 read -p "Database Name: " db_name
 
-echo "Enter a database username:"
+echo "Enter a database username"
 read -p "Username: " db_user
 
-echo "Choose a password for" $db_name
+echo "Choose a password for " $db_name
 read -sp "Password: " db_password
 
 echo "Choose a root password for the database"
@@ -28,9 +28,12 @@ yum install lynx -y
 amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
 yum install httpd -y
 yum install yum install mariadb mariadb-server jemalloc -y
+amazon-linux-extras install php8.1 -y
+yum install php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
 #
 ## Start and enable Apache web-server
 #
+sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
 systemctl enable httpd
 systemctl start httpd
 #
@@ -61,13 +64,6 @@ chmod 640 /root/.my.cnf
 echo "[client]">>/root/.my.cnf
 echo "user=root">>/root/.my.cnf
 echo "password=$sqlrootpassword">>/root/.my.cnf
-#
-## Install and configure PHP
-#
-amazon-linux-extras install php8.1 -y
-yum install php-bz2 php-mysqli php-curl php-gd php-intl php-common php-mbstring php-xml -y
-sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
-systemctl restart httpd
 #
 ## Download, extract and configure WordPress
 #

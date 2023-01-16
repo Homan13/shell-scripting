@@ -7,6 +7,9 @@
 #
 ## Variables
 #
+echo "Enter directory for Drupal Files"
+read -p "Web Directory: " web_dir
+
 echo "Enter a database name:"
 read -p "Database Name:" db_name
 
@@ -23,6 +26,8 @@ apt update -y && apt upgrade -y
 apt install apache2 -y
 rm -rf /var/www/html/index.html
 apt install mariadb-server-10.6 mariadb-client-10.6 -y
+apt install php8.1 -y
+apt install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysql -y
 #
 ## Configure, start and enable Apache web-server
 #
@@ -65,11 +70,6 @@ mysql -u root -e "CREATE DATABASE $db_name;"
 mysql -u root -e "CREATE USER '$db_user'@'localhost' IDENTIFIED BY '$db_password';"
 mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'localhost';"
 mysql -u root -e "FLUSH PRIVILEGES;"
-#
-## Install and configure PHP
-#
-apt install php8.1 -y
-apt install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysql -y
 #
 ## Download and extract Drupal
 #
