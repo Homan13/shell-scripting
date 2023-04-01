@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-## Configure a Drupal based LAMP stack running on a Linux instance (Amazon Linux 2, Ubuntu (22.04) and RHEL 9)
+## Configure a Drupal based LAMP stack running on a Linux instance (Amazon Linux 2, Amazon Linux 2023, RHEL 9 and Ubuntu (22.04))
 ## This is an Apache based installation
 ## Inspired by https://linuxhostsupport.com/blog/how-to-install-drupal-9-cms-on-ubuntu-20-04/
 #
@@ -21,18 +21,41 @@ read -sp "Password: " db_password
 echo "Choose a root password for the database"
 read -sp "Root password: " sqlrootpassword
 
-platform=$(cat /etc/*release | grep ^NAME | sed 's/NAME=//')
+platform=$(cat /etc/*release | grep -w ^NAME | sed 's/NAME=//')
+version=$(cat /etc/*release | grep -w ^VERSION | sed 's/VERSION=//')
 #
 ## Update instance and install Apache, MariaDB, PHP and other utilities
 #
-if [[ $platform == '"Amazon Linux"' ]]; then
+if [[ $platform == '"Amazon Linux"' ]] && [[ $version == '"2"' ]]; then
    echo "Updating and installing packages on Amazon Linux 2"
    yum update -y
-   amazon-linux-extras enable mariadb10.5 php8.1 && yum clean metadata
+   yum install lynx -y
+   amazon-linux-extras enable php8.1 && yum clean metadata
+   curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+   bash mariadb_repo_setup --os-type=rhel  --os-version=7 --mariadb-server-version=10.9
+   rm -rf /var/cache/yum
+   yum makecache
+   amazon-linux-extras install epel -y
    yum install httpd -y
-   yum install yum install mariadb mariadb-server jemalloc -y
+   yum install MariaDB-server MariaDB-client jemalloc -y
    amazon-linux-extras install php8.1 -y
    yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
+
+   sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
+   systemctl enable httpd
+   systemctl start httpd
+
+   systemctl enable mariadb
+   systemctl start mariadb
+
+elif [[ $platform == '"Amazon Linux"' ]] && [[ $version == '"2023"' ]]; then
+   echo "Updating and installing packages on Amazon Linux 2023"
+   dnf update -y
+   dnf install lynx -y
+   dnf install httpd -y
+   dnf install mariadb105 mariadb105-server -y
+   dnf install php -y
+   dnf install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 
    sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
    systemctl enable httpd
