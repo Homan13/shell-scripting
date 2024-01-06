@@ -30,15 +30,15 @@ if [[ $platform == '"Amazon Linux"' ]] && [[ $version == '"2"' ]]; then
    echo "Updating and installing packages on Amazon Linux 2"
    yum update -y
    yum install lynx -y
-   amazon-linux-extras enable php8.1 && yum clean metadata
+   amazon-linux-extras enable php8.2 && yum clean metadata
    curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
-   bash mariadb_repo_setup --os-type=rhel  --os-version=7 --mariadb-server-version=10.9
+   bash mariadb_repo_setup --os-type=rhel  --os-version=7 --mariadb-server-version=10.11
    rm -rf /var/cache/yum
    yum makecache
    amazon-linux-extras install epel -y
    yum install httpd -y
    yum install MariaDB-server MariaDB-client jemalloc -y
-   amazon-linux-extras install php8.1 -y
+   amazon-linux-extras install php8.2 -y
    yum install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 
    sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/httpd/conf/httpd.conf
@@ -70,8 +70,10 @@ elif [[ $platform == '"Red Hat Enterprise Linux"' ]]; then
    dnf install wget -y
    dnf install httpd -y
    dnf install mariadb mariadb-server -y
-   dnf module reset php
-   dnf module enable php:8.1 -y
+   dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
+   dnf install http://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
+   dnf module reset php -y
+   dnf module install php:remi-8.2 -y
    dnf install php -y
    dnf install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysqlnd -y
 
@@ -85,11 +87,17 @@ elif [[ $platform == '"Red Hat Enterprise Linux"' ]]; then
 elif [[ $platform == '"Ubuntu"' ]]; then
    echo "Updating and installing packages on Ubuntu"
    apt update -y && apt upgrade -y
+   apt install dirmngr ca-certificates software-properties-common apt-transport-https curl -y
    apt install apache2 -y
    rm -rf /var/www/html/index.html
-   apt install mariadb-server-10.6 mariadb-client-10.6 -y
-   apt install php8.1 -y
-   apt install php-dom php-gd php-simplexml php-xml php-opcache php-mbstring php-mysql -y
+   curl -fsSL http://mirror.mariadb.org/PublicKey_v2 | sudo gpg --dearmor | sudo tee /usr/share/keyrings/mariadb.gpg > /dev/null
+   echo "deb [arch=amd64,arm64,ppc64el signed-by=/usr/share/keyrings/mariadb.gpg] http://mirror.mariadb.org/repo/10.11/ubuntu/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/mariadb.list
+   apt update
+   apt install mariadb-server mariadb-client -y
+   add-apt-repository ppa:ondrej/php -y
+   apt update
+   apt install php8.2 -y
+   apt install php8.2-dom php8.2-gd php8.2-simplexml php8.2-xml php8.2-opcache php8.2-mbstring php8.2-mysql -y
 
    sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
    a2enmod rewrite
@@ -159,5 +167,6 @@ cd /tmp
 #
 ## System cleanup
 #
+rm -rf ~/drupal.sh
 rm -rf /tmp/tar.gz
-rm -rf drupal
+rm -rf /tmp/drupal
