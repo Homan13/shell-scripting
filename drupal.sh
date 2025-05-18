@@ -109,7 +109,6 @@ elif [[ $platform == '"Ubuntu"' ]]; then
    
 else
    echo "Unsupported version of Linux"
-
 fi
 #
 ## MySQL secure installation
