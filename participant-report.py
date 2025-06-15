@@ -5,22 +5,17 @@ from openpyxl import load_workbook
 from openpyxl.worksheet.protection import SheetProtection
 import pdfplumber
 
-# Configure logging
 dlogging_format = '%(asctime)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=dlogging_format)
 
-# Constants
 DEFAULT_SHEET_NAME = '20-TERG-9137_Participation_Atla'
-HEADER_ROW = 1                  # Header row index (1-based)
-DATA_START_ROW = 20             # Updated to preserve rows 1–19
+HEADER_ROW = 1
+DATA_START_ROW = 20
 CLEAR_COLUMNS = ['A', 'B', 'I']
-TIME_PATTERN = re.compile(r'^\d+:\d+\.\d+$')  # Pattern to detect lap time (e.g., 1:18.035)
+TIME_PATTERN = re.compile(r'^\d+:\d+\.\d+$')
 
 
 def extract_participant_data(pdf_path):
-    """
-    Parses the PDF and returns participants as dicts with Number, Name, and Class.
-    """
     participants = []
     try:
         with pdfplumber.open(pdf_path) as pdf:
@@ -30,7 +25,6 @@ def extract_participant_data(pdf_path):
                     tokens = line.strip().split()
                     if len(tokens) < 6 or not tokens[0].isdigit():
                         continue
-                    # Locate first timing token
                     time_idx = next((i for i, t in enumerate(tokens) if TIME_PATTERN.match(t)), None)
                     if time_idx is None or time_idx < 4:
                         continue
@@ -70,18 +64,15 @@ def update_excel_template(
 
     sheet = book[sheet_name]
 
-    # Unprotect
     if sheet.protection.sheet:
         logging.info("Unprotecting sheet.")
         sheet.protection = SheetProtection(sheet=False)
 
-    # Clear old data in A, B, I only (starting from DATA_START_ROW)
     for i in range(max(len(participants), 50)):
         row = DATA_START_ROW + i
         for col in CLEAR_COLUMNS:
             sheet[f"{col}{row}"] = None
 
-    # Write new data: First Name -> A, Last Name -> B, Class -> I
     for i, p in enumerate(participants):
         row = DATA_START_ROW + i
         parts = p['Name'].rsplit(' ', 1)
@@ -92,12 +83,10 @@ def update_excel_template(
         sheet[f'B{row}'] = last
         sheet[f'I{row}'] = p['Class']
 
-    # Re-protect if needed
     if sheet_password:
         logging.info("Re-protecting sheet.")
         sheet.protection = SheetProtection(password=sheet_password, sheet=True)
 
-    # Save
     try:
         book.save(output_path)
         logging.info(f"Saved report to '{output_path}'")
@@ -121,6 +110,3 @@ if __name__ == '__main__':
         sheet_name=args.sheet_name,
         sheet_password=args.sheet_password
     )
-
-
-
