@@ -3,8 +3,12 @@
 
 Takes two inputs that complement each other:
 
-  * the Orbits results PDF  - finishing order, car number, driver name, class
-  * the Orbits CSV export   - member ID, vehicle make/model, canonical name spelling
+  * the Orbits results PDF - finishing order, car number, driver name, class
+  * the MotorsportsReg (MSR) participant export - member ID, vehicle
+    make/model, canonical name spelling
+
+Note that the CSV comes out of MSR, not Orbits, despite being conventionally
+named something like "20260926-TTOrbitsExport.csv".
 
 The two are joined on driver name. The CSV is authoritative for name spelling
 and for the first/last split, which cannot be inferred reliably from the PDF
@@ -62,7 +66,7 @@ def normalize_name(name):
 
 
 def load_driver_index(csv_path):
-    """Build a driver lookup from the Orbits CSV export.
+    """Build a driver lookup from the MotorsportsReg participant export.
 
     The export carries one row per driver per segment (Saturday and Sunday),
     so rows are collapsed to one entry per driver. Returns the lookup plus the
@@ -323,7 +327,7 @@ def update_excel_template(
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Populate participation report')
     parser.add_argument('pdf_input', help='Orbits results PDF path')
-    parser.add_argument('csv_input', help='Orbits CSV export path')
+    parser.add_argument('csv_input', help='MotorsportsReg participant export CSV path')
     parser.add_argument('excel_template', help='Excel template path')
     parser.add_argument('output_file', help='Output Excel path')
     parser.add_argument('--sheet-name', default=DEFAULT_SHEET_NAME, help='Worksheet name')

@@ -78,16 +78,22 @@ install branch.
 
 ### `participant-report.py`
 
-Unrelated to the LAMP scripts. Takes **two** Orbits exports and merges them into
-an SCCA participation report `.xlsx`:
+Unrelated to the LAMP scripts. Merges **two different systems' exports** into an
+SCCA participation report `.xlsx`:
 
 ```
 participant-report.py <results.pdf> <export.csv> <template.xlsx> <output.xlsx>
 ```
 
-- the **PDF** supplies finishing order, car number, driver name, class
-- the **CSV** supplies member ID, vehicle make/model, and the canonical
-  first/last name split
+- the **PDF** comes from Orbits timing software — finishing order, car number,
+  driver name, class
+- the **CSV** comes from MotorsportsReg (MSR) — member ID, vehicle make/model,
+  and the canonical first/last name split
+
+The CSV is pulled from MSR despite being conventionally named something like
+`20260926-TTOrbitsExport.csv`. Don't let the filename mislead you: when a field
+is missing or malformed, which system to chase depends on which export it came
+from.
 
 **The two are joined on driver name, not car number.** Numbers disagree between
 the exports (the PDF had Matthew Peck as No. 13 where the CSV said 70) and

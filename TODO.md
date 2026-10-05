@@ -119,7 +119,7 @@ repo — but this will rot.
   reports they were constant (`2` and `Yes`) for every row. If that holds, add
   `--passing-rules` / `--satisfactory` flags rather than typing them in Excel.
 - [ ] Make-Model (P) is written without a model year. Past reports included one
-  ("2000 Mazda Miata"); the Orbits CSV has no year field. Either accept the
+  ("2000 Mazda Miata"); the MSR export has no year field. Either accept the
   shorter form or ask for a year column in the export.
 - [ ] Member ID is missing from the CSV for some drivers (2 of 32 in the
   2026 Weekend 8 data). The script warns and leaves the cell blank. Worth
